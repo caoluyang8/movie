@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extJS %}
+    {{  block.super }}
+    <script type="text/javascript" src="{% static 'app/cart/orderinfo.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <h6>订单号:{{ ordernum }}</h6>
+    <h6>订单状态:{{ orderstatu }}</h6>
+    <ul>
+        {% for orderGood in orderGoods %}
+            <li>
+                <img src="{{ orderGood.og_goods.productimg }}" alt="#">
+                <span>{{ orderGood.og_goods.productlongname }}</span>
+                <span>{{ orderGood.og_num }}</span>
+            </li>
+        {% endfor %}
+
+    </ul>
+    <button>取消订单</button>
+    <button ordernum="{{ ordernum }}" id="pay_button">付款</button>
+
+
+{% endblock %}
