@@ -1,0 +1,56 @@
+{% extends 'main/home.html' %}
+
+{% block pagecontent %}
+    {{ super() }}
+    <ul class="movie_list">
+        {% for row in data %}
+            <li>
+                <div class="movie_list_left">
+                    <a target="_blank" href="#" title="{{ row.moviename }}">
+                        <img src="{{ row.movieicon }}"
+                             alt="{{ row.movieicon }}">
+                        <div class="bottom-cover">
+                            <span class="film-time">{{ row.movielength }}</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="movie_list_right">
+                    <h2>
+                        <a target="_blank" href="" title="{{ row.moviename }}">
+                            <span>{{ row.moviename }}</span>
+                        </a>
+                    </h2>
+
+                    <div class="movie-intro">
+                        {{ row.moviesynopsis }}
+                    </div>
+                    <div class="movie-like">
+                        <span class="glyphicon glyphicon-heart" id="favorite" onclick="dofavorite({{ row.id }})" {% if current_user.is_authenticated %}{% if current_user.is_favorite(data.id) %}{% else %}style="color: red;"{% endif %}{% else %}style="color: red;"{% endif %}></span>
+                        <span>{{ row.collection }}</span>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+
+    </ul>
+    </div>
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+    <script>
+        function dofavorite(pid) {
+            var node = $('#favorite');
+            alert(node.html())
+            $.get('{{ url_for('main.dofavorite',_external=True) }}', {'pid': pid}, function (data, status) {
+                if (data.code==200){
+
+                } else {
+                    if (window.confirm('是否前去登录?')) {
+                        window.location.href='{{ url_for('user.login') }}'
+                    }
+                }
+            })
+        }
+    </script>
+{% endblock %}

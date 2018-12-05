@@ -1,0 +1,33 @@
+{% extends 'common/base.html' %}
+{% block title %}
+    用户登录
+{% endblock %}
+
+{% block pagecontent %}
+    <div class="container-fluid">
+        <div class="form-info">
+            <h2>用户登录</h2>
+            {% from 'bootstrap/wtf.html' import quick_form %}
+            {{ quick_form(form) }}
+            <a href="{{ url_for('user.register') }}">还没有账号?前去注册</a>
+        </div>
+    </div>
+
+    <style type="text/css">
+        .form-info {
+            border: 1px solid orange;
+            margin: 100px auto;
+            width: 30%;
+            padding: 50px;
+        }
+
+        .form-info h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .form-info .submit {
+            text-align: center;
+        }
+    </style>
+{% endblock %}

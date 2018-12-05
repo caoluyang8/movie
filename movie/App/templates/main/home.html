@@ -1,0 +1,107 @@
+{% extends 'common/base.html' %}
+{% block title %}
+    首页
+{% endblock %}
+{% block metas %}
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <script type="text/javascript" src="{{ url_for('static',filename='js/jquery.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static',filename='js/bootstrap.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap-theme.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/swiper.css') }}"/>
+    <script type="text/javascript" src="{{ url_for('static',filename='js/swiper.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/reset.css') }}"/>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/home.css') }}"/>
+    <script type="text/javascript" src="{{ url_for('static',filename='js/home.js') }}"></script>
+
+{% endblock %}
+
+{% block pagecontent %}
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            {% for i in range(1,4) %}
+                <div class="swiper-slide">
+                    <img src="{{ url_for('static',filename='img/banner/'+i|string+'.jpg') }}" alt="...">
+                </div>
+            {% endfor %}
+        </div>
+        <div class="swiper-pagination swiper-pagination-white"></div>
+        <!-- Add Arrows -->
+        <div class="swiper-button-next swiper-button-white"></div>
+        <div class="swiper-button-prev swiper-button-white"></div>
+    </div>
+
+    <ul class="nav nav-tabs child-nav">
+        {% if not current_user.is_authenticated %}
+            <li role="presentation" class="active">
+                <a href="{{ url_for('main.index') }}">最新推荐</a>
+            </li>
+        {% else %}
+            <li role="presentation" class="active">
+                <a href="{{ url_for('main.index') }}">最新推荐</a>
+            </li>
+            <li role="presentation">
+                <a href="{{ url_for('main.collections') }}">收藏</a>
+            </li>
+        {% endif %}
+
+    </ul>
+    <ul class="movie_list">
+        {% for row in data %}
+            <li>
+                <div class="movie_list_left">
+                    <a target="_blank" href="#" title="{{ row.moviename }}">
+                        <img src="{{ row.movieicon }}"
+                             alt="{{ row.movieicon }}">
+                        <div class="bottom-cover">
+                            <span class="film-time">{{ row.movielength }}</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="movie_list_right">
+                    <h2>
+                        <a target="_blank" href="" title="{{ row.moviename }}">
+                            <span>{{ row.moviename }}</span>
+                        </a>
+                    </h2>
+
+                    <div class="movie-intro">
+                        {{ row.moviesynopsis }}
+                    </div>
+                    <div class="movie-like">
+                        <span class="glyphicon glyphicon-heart" id="favorite" onclick="dofavorite({{ row.id }})"
+                              {% if current_user.is_authenticated %}{% if current_user.is_favorite(data.id) %}style="color: red;"
+                              {% else %}{% endif %}{% else %}{% endif %}></span>
+                        <span>{{ row.collection }}</span>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+
+    </ul>
+    </div>
+
+
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+    <script>
+        function dofavorite(id) {
+            var node = $('#favorite');
+            alert(node.html())
+            $.get('{{ url_for('main.dofavorite',_external=True) }}', {'id': id}, function (data, status) {
+                if (data.code == 200) {
+
+                } else {
+                    if (window.confirm('是否前去登录?')) {
+                        window.location.href = '{{ url_for('user.login') }}'
+                    }
+                }
+            })
+        }
+    </script>
+{% endblock %}
